@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 
 import Header from '../Header'
-import Dashbord from '../Dashbord'
+import DishItem from '../DishItem'
 
 import './index.css'
 
@@ -65,12 +65,8 @@ const Home = () => {
   const fetchRestaurantApi = async () => {
     const api =
       'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details'
-    const response = await fetch(api)
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
-
-    const data = await response.json()
+    const apiResponse = await fetch(api)
+    const data = await apiResponse.json()
     const updatedData = getUpdatedData(data[0].table_menu_list)
     setResponse(updatedData)
     setActiveCategoryId(updatedData[0].menuCategoryId)
@@ -111,26 +107,14 @@ const Home = () => {
     })
 
   const renderDishes = () => {
-    // const {categoryDishes} = response.find(
-    //   eachCategory => eachCategory.menuCategoryId === activeCategoryId,
-    // )
-    const foundCategory = response.find(
-      each => each.menuCategoryId === activeCategoryId,
+    const {categoryDishes} = response.find(
+      eachCategory => eachCategory.menuCategoryId === activeCategoryId,
     )
-    if (!foundCategory) {
-      return <p>No dishes found for this category.</p>
-    }
-
-    const {categoryDishes} = foundCategory
-
-    if (!categoryDishes || categoryDishes.length === 0) {
-      return <p>No dishes found for this category.</p>
-    }
 
     return (
       <ul className="m-0 d-flex flex-column dishes-list-container">
         {categoryDishes.map(eachDish => (
-          <Dashbord
+          <DishItem
             key={eachDish.dishId}
             dishDetails={eachDish}
             cartItems={cartItems}
